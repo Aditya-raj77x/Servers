@@ -17,16 +17,41 @@ http
                 body+=ck;
             }).on('end',()=>{
                 body=JSON.parse(body);
-                console.log("DATA :",body);
-            })
+                const newLIST=doList;
+                newLIST.push(body.item);
+                console.log(newLIST);
+                response.writeHead(201);
+            });
+        }else if(method==="DELETE"){
+               let body="";
+               request.on('error',(err)=>{
+                   console.error(err);
+               }).on('data',(ch)=>{
+                    body+=ch;
+               }).on('end',()=>{
+                    body=JSON.parse(body);
+                    let delLIST=body.item;
+                    for(let i=0 ; i < doList.length;i++){
+                        if(doList[i]==delLIST){
+                            doList.splice(i,1);
+                            break;
+                        }
+                    }
+                    response.writeHead(200,{"Content-Type":"text/html"});
+                    response.write("<h2>ELEMENT DELETED SUCCESSFULLY</h2>");
+                    console.log(doList);
+
+               })
         }
+        
 
         else{
             response.writeHead(502);
             
         }
     }else{
-        response.writeHead(404);
+        response.writeHead(200,{"Content-Type":"text/html"});
+        response.write("<h1>You are not in doList route</h1>");
     }
     response.end()
   })
